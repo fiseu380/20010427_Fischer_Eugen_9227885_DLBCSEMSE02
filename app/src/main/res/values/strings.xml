@@ -1,6 +1,47 @@
 <resources>
     <string name="app_name">ZanshinTracker</string>
-    <string name="title_name">Zanshin Tracker</string>
-    <string name="welcome_message">Welcome</string>
-    <string name="button_start_focus">Start Focus</string>
+
+    <!-- Setup Screen -->
+    <string name="setup_tv_title">Zanshin Focus Setup</string>
+    <string name="setup_tv_subtitle">Zanshin stands for \"unwavering focus\". </string>
+    <string name="setup_tv_explain">Choose a project, set a clear target, and track your progress until it\'s done.</string>
+    <string name="setup_tv_test">Hello bro</string>
+
+    <string name="setup_tv_label_category">1. What do you want to track?</string>
+    <string name="setup_tv_label_goal">2. How do you want to set your goal?</string>
+    <string name="setup_tv_label_amount_sub">Option A: Target Amount</string>
+    <string name="setup_tv_label_time_sub">Option B: Time Commitment in hours</string>
+    <string name="setup_tv_or">OR</string>
+    <string name="setup_tv_label_deadline">3. When is your deadline?</string>
+
+    <string name="setup_et_hint_goal">Amount (e.g., 40)</string>
+    <string name="setup_et_hint_unit">Unit (e.g. Pages)</string>
+    <string name="setup_et_hint_time_hours">Time commitment (Hours)</string>
+    <string name="setup_et_hint_deadline">Tap to select a date</string>
+
+    <string name="setup_tv_helper">Need help calculating daily hours?</string>
+    <string name="setup_btn_save">Save &amp; Start Tracking</string>
+
+    <!-- Calculator Dialog -->
+    <string name="calc_alert_title">Helper for the Calculation of the target goal depending on the Deadline</string>
+    <string name="calc_alert_message">How many hours per day do you want to work?</string>
+    <string name="calc_et_hint_hours">Hours per day</string>
+    <string name="calc_btn_ok">OK</string>
+    <string name="calc_btn_cancel">Cancel</string>
+
+    <!-- Messages & Errors -->
+    <string name="msg_setup_fill_all">Please fill in all fields</string>
+    <string name="msg_setup_save_success">Saved %s goal!</string>
+    <string name="msg_setup_deadline_missing">Please choose a deadline!</string>
+    <string name="msg_setup_no_target">Please set a target amount OR a time commitment!</string>
+    <string name="msg_setup_calc_updated">Goal automatically updated to hours!</string>
+    <string name="msg_setup_error_numbers">Numbers only!</string>
+    <string name="msg_setup_error_calc">Error in calculation!</string>
+‚
+    <string-array name="setup_sp_category_options">
+        <item>Studying for exams</item>
+        <item>Writing thesis</item>
+        <item>Everyday tasks</item>
+        <item>Custom project</item>
+    </string-array>
 </resources>
