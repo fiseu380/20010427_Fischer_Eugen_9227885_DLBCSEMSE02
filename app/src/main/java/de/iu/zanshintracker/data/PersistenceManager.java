@@ -18,6 +18,7 @@ public class PersistenceManager {
     private static final String KEY_GOAL_UNIT = "user_goal_unit";
     private static final String KEY_DEADLINE = "user_deadline";
     private static final String KEY_TIME_HOURS = "user_time_hours";
+    private static final String KEY_TARGET_PROGRESS = "user_target_progress";
 
     // ===========================================================
     // 2. VARIABLES
@@ -26,6 +27,7 @@ public class PersistenceManager {
 
     /**
      * Constructor for the PersistenceManager.
+     *
      * @param context The context needed to access SharedPreferences.
      */
     public PersistenceManager(Context context) {
@@ -35,11 +37,12 @@ public class PersistenceManager {
 
     /**
      * Saves the complete setup configuration to the storage.
-     * @param category The chosen project category.
+     *
+     * @param category   The chosen project category.
      * @param goalAmount The target amount (e.g. 500).
-     * @param goalUnit The unit for the goal (e.g. words).
-     * @param deadline The target date as a string.
-     * @param timeHours The total time commitment in hours.
+     * @param goalUnit   The unit for the goal (e.g. words).
+     * @param deadline   The target date as a string.
+     * @param timeHours  The total time commitment in hours.
      */
     public void saveSetupData(String category, int goalAmount, String goalUnit, String deadline, int timeHours) {
         // 1. Open the editor to change values
@@ -52,12 +55,16 @@ public class PersistenceManager {
         editor.putString(KEY_DEADLINE, deadline);
         editor.putInt(KEY_TIME_HOURS, timeHours);
 
-        // 3. Save everything
+        // 3. Reset the target progress to 0 when saving a new setup
+        editor.putInt(KEY_TARGET_PROGRESS, 0);
+
+        // 4. Save everything
         editor.apply();
     }
 
     /**
      * Returns the saved project category.
+     *
      * @return The category string (default empty).
      */
     public String getCategory() {
@@ -66,6 +73,7 @@ public class PersistenceManager {
 
     /**
      * Returns the saved goal amount.
+     *
      * @return The goal as an integer (default 0).
      */
     public int getGoalAmount() {
@@ -74,6 +82,7 @@ public class PersistenceManager {
 
     /**
      * Returns the saved unit for the goal.
+     *
      * @return The unit string (default empty).
      */
     public String getGoalUnit() {
@@ -82,6 +91,7 @@ public class PersistenceManager {
 
     /**
      * Returns the saved deadline.
+     *
      * @return The deadline string (default empty).
      */
     public String getDeadline() {
@@ -90,9 +100,29 @@ public class PersistenceManager {
 
     /**
      * Returns the saved time commitment.
+     *
      * @return The hours as an integer (default 0).
      */
     public int getTimeHours() {
         return prefs.getInt(KEY_TIME_HOURS, 0);
+    }
+
+    /**
+     * Adds new progress to the current target progress and saves it.
+     *
+     * @param addedAmount The amount the user just completed.
+     */
+    public void addTargetProgress(int addedAmount) {
+        int current = getCurrentTargetProgress();
+        prefs.edit().putInt(KEY_TARGET_PROGRESS, current + addedAmount).apply();
+    }
+
+    /**
+     * Returns the currently achieved target progress.
+     *
+     * @return The current progress (default 0).
+     */
+    public int getCurrentTargetProgress() {
+        return prefs.getInt(KEY_TARGET_PROGRESS, 0);
     }
 }

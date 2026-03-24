@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         tools:context=".ui.MainActivity">
 
-        <!-- 1. MODERN HEADER AREA -->
+        <!-- =========================================================== -->
+        <!-- HEADER SECTION: Title and Welcome Message                 -->
+        <!-- =========================================================== -->
 
         <TextView
             android:id="@+id/tvSetupTitle"
@@ -43,7 +45,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSetupTitle" />
 
-        <!-- 2. THE MAIN CONFIGURATION CARD -->
+        <!-- =========================================================== -->
+        <!-- CARD SECTION: Setup Form                                   -->
+        <!-- =========================================================== -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cvSetupCard"
             android:layout_width="match_parent"
@@ -60,7 +65,6 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- Section: Mission -->
                 <TextView
                     android:id="@+id/tvSetupLabelCategory"
                     android:layout_width="wrap_content"
@@ -80,7 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
-                    android:background="#EEEEEE" />
+                    android:background="@color/grey" />
 
                 <!-- Section: Success Measure -->
                 <TextView
@@ -125,7 +129,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginVertical="8dp"
                     android:text="@string/setup_tv_or"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/grey"
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
@@ -152,7 +156,6 @@
                     android:layout_marginVertical="16dp"
                     android:background="#EEEEEE" />
 
-                <!-- Section: Timeline -->
                 <TextView
                     android:id="@+id/tvLabelDeadline"
                     android:layout_width="wrap_content"
@@ -187,7 +190,10 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- 3. PRIMARY ACTION BUTTON -->
+        <!-- =========================================================== -->
+        <!-- BUTTON SECTION: Save Button                                -->
+        <!-- =========================================================== -->
+
         <Button
             android:id="@+id/btnSetupSave"
             android:layout_width="match_parent"

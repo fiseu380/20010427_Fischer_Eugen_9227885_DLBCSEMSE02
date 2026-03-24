@@ -13,7 +13,8 @@
         android:theme="@style/Theme.ZanshinTracker">
         <activity
             android:name=".ui.DashboardActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
