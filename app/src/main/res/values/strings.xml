@@ -22,8 +22,26 @@
     <string name="setup_tv_helper">Need help calculating daily hours?</string>
     <string name="setup_btn_save">Save &amp; Start Tracking</string>
 
+    <!-- Dashboard Screen -->
+    <string name="dashboard_tv_title">My Dashboard</string>
+    <string name="dashboard_tv_goal_label">Goal: %s</string>
+    <string name="dashboard_tv_days_left">%d days left</string>
+    <string name="dashboard_tv_deadline_reached">Deadline reached!</string>
+    <string name="dashboard_tv_deadline_unknown">Deadline unknown</string>
+
+    <string name="dashboard_tv_progress_target_label">Target Progress (%s)</string>
+    <string name="dashboard_tv_progress_time_label">Time Commitment (Hours)</string>
+    <string name="dashboard_tv_progress_numbers">%1$d / %2$d</string>
+
+    <!-- Button for adding progress Dialog -->
+    <string name="dashboard_btn_alert_title">Add Progress</string>
+    <string name="dashboard_btn_alert_message">How much do you want to add?</string>
+    <string name="dashboard_btn_alert_hint">e.g. 50</string>
+    <string name="dashboard_btn_alert_add">Add</string>
+    <string name="dashboard_btn_alert_cancel">Cancel</string>
+
     <!-- Calculator Dialog -->
-    <string name="calc_alert_title">Helper for the Calculation of the target goal depending on the Deadline</string>
+    <string name="calc_alert_title">Calculate Daily Hours</string>
     <string name="calc_alert_message">How many hours per day do you want to work?</string>
     <string name="calc_et_hint_hours">Hours per day</string>
     <string name="calc_btn_ok">OK</string>
@@ -37,7 +55,7 @@
     <string name="msg_setup_calc_updated">Goal automatically updated to hours!</string>
     <string name="msg_setup_error_numbers">Numbers only!</string>
     <string name="msg_setup_error_calc">Error in calculation!</string>
-‚
+
     <string-array name="setup_sp_category_options">
         <item>Studying for exams</item>
         <item>Writing thesis</item>

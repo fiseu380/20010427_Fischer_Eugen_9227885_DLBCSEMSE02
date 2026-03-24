@@ -60,12 +60,8 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clSetupMain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-            int paddingLeft = v.getPaddingLeft();
-            int paddingTop = systemBars.top + v.getPaddingTop();
-            int paddingRight = v.getPaddingRight();
-            int paddingBottom = systemBars.bottom + v.getPaddingBottom();
-
-            v.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            // FIX: Set padding absolutely to prevent UI shifting when keyboard opens
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 
             return insets;
         });
