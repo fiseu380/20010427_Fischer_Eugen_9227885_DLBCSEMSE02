@@ -34,6 +34,7 @@
     <string name="dashboard_tv_progress_numbers">%1$d / %2$d</string>
 
     <!-- Button for adding progress Dialog -->
+    <string name="dashboard_btn_add_progress">+</string>
     <string name="dashboard_btn_alert_title">Add Progress</string>
     <string name="dashboard_btn_alert_message">How much do you want to add?</string>
     <string name="dashboard_btn_alert_hint">e.g. 50</string>
