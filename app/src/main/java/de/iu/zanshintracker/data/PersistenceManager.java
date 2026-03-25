@@ -48,14 +48,14 @@ public class PersistenceManager {
         // 1. Open the editor to change values
         SharedPreferences.Editor editor = prefs.edit();
 
-        // 2. Put all values into the editor using our keys
+        // 2. Put all values into the editor
         editor.putString(KEY_CATEGORY, category);
         editor.putInt(KEY_GOAL_AMOUNT, goalAmount);
         editor.putString(KEY_GOAL_UNIT, goalUnit);
         editor.putString(KEY_DEADLINE, deadline);
         editor.putInt(KEY_TIME_HOURS, timeHours);
 
-        // 3. Reset the target progress to 0 when saving a new setup
+        // 3. Reset target progress
         editor.putInt(KEY_TARGET_PROGRESS, 0);
 
         // 4. Save everything
@@ -124,5 +124,12 @@ public class PersistenceManager {
      */
     public int getCurrentTargetProgress() {
         return prefs.getInt(KEY_TARGET_PROGRESS, 0);
+    }
+
+    /**
+     * Clears all saved setup data to start a new goal.
+     */
+    public void clearSetupData() {
+        prefs.edit().clear().apply();
     }
 }

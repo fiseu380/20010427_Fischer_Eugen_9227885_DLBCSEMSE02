@@ -27,8 +27,8 @@ import de.iu.zanshintracker.R;
 import de.iu.zanshintracker.data.PersistenceManager;
 
 /**
- * This class is the main screen of the app.
- * It handles the input fields, categories via Spinner, and a helper calculator.
+ * Main screen of the app.
+ * Handles user input, category selection, and the time calculator.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -52,29 +52,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Setup for the full screen view
+        // 1. Initialize PersistenceManager
+        persistenceManager = new PersistenceManager(this);
+
+        // 2. Automatic Routing
+        if (routeToDashboardIfGoalExists()) {
+            return; // Stop execution if routed
+        }
+
+        // 3. Setup full screen view
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Handle the padding for the system bars
+        // 4. Handle system bar padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clSetupMain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            // FIX: Set padding absolutely to prevent UI shifting when keyboard opens
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-
             return insets;
         });
 
-        // 1. Initialize variables and UI components
-        persistenceManager = new PersistenceManager(this);
+        // 5. Initialize UI components
         initializeViews();
         setupSpinner();
 
-        // 2. Click-Listener for the deadline field (DatePicker)
+        // 6. Set up Click Listeners
         etSetupDeadline.setOnClickListener(v -> showDatePicker());
 
-        // 3. Click-Listener for the helper text (Time Calculator)
         tvSetupHelper.setOnClickListener(v -> {
             String deadlineStr = etSetupDeadline.getText().toString();
             if (deadlineStr.isEmpty()) {
@@ -84,12 +87,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 4. Click-Listener for the save button
         btnSetupSave.setOnClickListener(v -> handleSaveAction());
     }
 
     /**
-     * Finds all UI elements from the XML layout and links them to Java variables.
+     * Checks if a goal exists and routes to the Dashboard.
+     *
+     * @return true if routed, false otherwise.
+     */
+    private boolean routeToDashboardIfGoalExists() {
+        // 1. Check if deadline is saved
+        if (!persistenceManager.getDeadline().isEmpty()) {
+
+            // 2. Navigate to Dashboard
+            Intent intent = new Intent(this, DashboardActivity.class);
+            startActivity(intent);
+
+            // 3. Close setup
+            finish();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Links XML layout elements to Java variables.
      */
     private void initializeViews() {
         etSetupGoal = findViewById(R.id.etSetupGoal);
@@ -100,69 +122,88 @@ public class MainActivity extends AppCompatActivity {
         tvSetupHelper = findViewById(R.id.tvSetupHelper);
         btnSetupSave = findViewById(R.id.btnSetupSave);
 
-        // Ensure etSetupDeadline is not focusable manually to protect the UX
+        // Disable manual text input for the DatePicker
         etSetupDeadline.setFocusable(false);
         etSetupDeadline.setClickable(true);
     }
 
     /**
-     * Sets up the Spinner with options from the strings.xml array.
+     * Sets up the category Spinner.
      */
     private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.setup_sp_category_options, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.setup_sp_category_options,
+                android.R.layout.simple_spinner_item
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spSetupCategory.setAdapter(adapter);
     }
 
     /**
-     * Configures and shows the DatePickerDialog with a minDate restriction.
+     * Shows a DatePickerDialog.
      */
     private void showDatePicker() {
+        // 1. Get current date
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        // 2. Build dialog
         DatePickerDialog dialog = new DatePickerDialog(this, (view, y, m, d) -> {
             String dateString = d + "." + (m + 1) + "." + y;
             etSetupDeadline.setText(dateString);
         }, year, month, day);
 
+        // 3. Prevent selecting past dates
         dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         dialog.show();
     }
 
     /**
-     * Shows a dialog to ask for daily work hours and calculates the total.
+     * Shows a dialog to calculate total hours.
+     *
+     * @param deadlineStr The chosen deadline.
      */
     private void showCalculatorDialog(String deadlineStr) {
         final EditText etCalcInput = new EditText(this);
         etCalcInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        etCalcInput.setHint(R.string.calc_et_hint_hours);
+        etCalcInput.setHint(R.string.setup_dialog_calc_hint);
 
-        new AlertDialog.Builder(this).setTitle(R.string.calc_alert_title).setMessage(R.string.calc_alert_message).setView(etCalcInput).setPositiveButton(R.string.calc_btn_ok, (dialog, which) -> {
-            String hoursStr = etCalcInput.getText().toString();
-            if (!hoursStr.isEmpty()) {
-                performCalculation(deadlineStr, hoursStr);
-            }
-        }).setNegativeButton(R.string.calc_btn_cancel, null).show();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.setup_dialog_calc_title)
+                .setMessage(R.string.setup_dialog_calc_message)
+                .setView(etCalcInput)
+                .setPositiveButton(R.string.setup_dialog_calc_ok, (dialog, which) -> {
+                    String hoursStr = etCalcInput.getText().toString();
+                    if (!hoursStr.isEmpty()) {
+                        performCalculation(deadlineStr, hoursStr);
+                    }
+                })
+                .setNegativeButton(R.string.setup_dialog_calc_cancel, null)
+                .show();
     }
 
     /**
-     * Calculates the total hours and updates fields with a feedback Toast.
+     * Calculates total hours and updates the UI.
+     *
+     * @param deadlineStr The chosen deadline.
+     * @param hoursPerDayStr Daily work hours.
      */
     private void performCalculation(String deadlineStr, String hoursPerDayStr) {
         try {
+            // 1. Parse dates
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d.M.yyyy");
             LocalDate deadlineDate = LocalDate.parse(deadlineStr, dtf);
             LocalDate today = LocalDate.now();
 
             long daysBetween = ChronoUnit.DAYS.between(today, deadlineDate);
 
+            // 2. Calculate and update UI
             if (daysBetween >= 0) {
                 long totalHours = daysBetween * Integer.parseInt(hoursPerDayStr);
 
-                // For this logic, we fill the TimeHours field automatically
                 etSetupTimeHours.setText(String.valueOf(totalHours));
                 Toast.makeText(this, R.string.msg_setup_calc_updated, Toast.LENGTH_SHORT).show();
             }
@@ -172,31 +213,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Reads all user inputs and prepares them for saving.
+     * Validates inputs and saves data.
      */
     private void handleSaveAction() {
-        // 1. Get input strings
+        // 1. Read inputs
         String goalStr = etSetupGoal.getText().toString();
         String unitStr = etSetupUnit.getText().toString();
         String timeStr = etSetupTimeHours.getText().toString();
         String deadlineStr = etSetupDeadline.getText().toString();
         String categoryStr = spSetupCategory.getSelectedItem().toString();
 
-        // 2. Validation
-
-        // Check if deadline is chosen
+        // 2. Check deadline
         if (deadlineStr.isEmpty()) {
             Toast.makeText(this, R.string.msg_setup_deadline_missing, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Main Rule: At least one target must be set
+        // 3. Ensure at least one target is set
         if (goalStr.isEmpty() && timeStr.isEmpty()) {
             Toast.makeText(this, R.string.msg_setup_no_target, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 3. Prepare values for logic
+        // 4. Parse inputs to integers
         int goal = 0;
         if (!goalStr.isEmpty()) {
             try {
@@ -217,10 +256,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // 4. Save setup data via PersistenceManager
+        // 5. Save data
         persistenceManager.saveSetupData(categoryStr, goal, unitStr, deadlineStr, timeHours);
 
-        // 5. Navigate to Dashboard and close setup
+        // 6. Navigate to Dashboard
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
         finish();

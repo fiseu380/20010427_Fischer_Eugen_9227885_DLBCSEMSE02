@@ -1,6 +1,8 @@
 package de.iu.zanshintracker.ui;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +36,10 @@ public class DashboardActivity extends AppCompatActivity {
     // 1. UI COMPONENTS
     // ===========================================================
     private TextView tvDashboardTitle;
+    private Button btnDashboardNewGoal;
     private TextView tvDashboardGoal;
     private TextView tvDashboardCountdown;
+    private int defaultTextColor;
 
     private LinearLayout llTargetSection;
     private LinearLayout llTimeSection;
@@ -54,7 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Setup for the full screen view (Consistent with MainActivity)
+        // Setup for the full screen view
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
 
@@ -62,7 +67,6 @@ public class DashboardActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clDashboardMain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-
             return insets;
         });
 
@@ -70,21 +74,30 @@ public class DashboardActivity extends AppCompatActivity {
         persistenceManager = new PersistenceManager(this);
         initializeViews();
 
-        // 2. Load and display the mission data
+        // 2. Load and display goal data
         loadDashboardData();
 
         // 3. Button Click Listener for the progress button
         btnAddTargetProgress.setOnClickListener(v -> showAddProgressDialog());
+
+        // 4. Button Click Listener to reset and start a new goal
+        btnDashboardNewGoal.setOnClickListener(v -> handleNewGoalAction());
     }
 
     /**
      * Finds all UI elements from the XML layout and links them to Java variables.
      */
     private void initializeViews() {
+        // 1. Header Section
         tvDashboardTitle = findViewById(R.id.tvDashboardTitle);
         tvDashboardGoal = findViewById(R.id.tvDashboardGoal);
         tvDashboardCountdown = findViewById(R.id.tvDashboardCountdown);
+        btnDashboardNewGoal = findViewById(R.id.btnDashboardNewGoal);
 
+        // Save the default system text color for the countdown alarm logic
+        defaultTextColor = tvDashboardCountdown.getCurrentTextColor();
+
+        // 2. Progress Section
         llTargetSection = findViewById(R.id.llTargetSection);
         llTimeSection = findViewById(R.id.llTimeSection);
         pbTarget = findViewById(R.id.pbTarget);
@@ -96,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads the stored setup data and calculates the countdown.
+     * * Loads the stored setup data, updates text fields, and configures the progress bars.
      */
     private void loadDashboardData() {
         // 1. Get data from the persistence layer
@@ -113,11 +126,11 @@ public class DashboardActivity extends AppCompatActivity {
         // 3. Calculate and set the countdown
         calculateCountdown(deadlineStr);
 
-        // 4. Progress Logic
+        // 4. Retrieve current progress state
         int currentTargetProgress = persistenceManager.getCurrentTargetProgress();
-        int currentTimeProgress = 0;
+        int currentTimeProgress = 0; // Placeholder for future time tracking implementation
 
-        // Target (Amount) Logic
+        // 5. Setup Target (Amount) UI Logic
         if (goalAmount > 0) {
             llTargetSection.setVisibility(View.VISIBLE);
 
@@ -130,10 +143,11 @@ public class DashboardActivity extends AppCompatActivity {
             String targetNumbers = getString(R.string.dashboard_tv_progress_numbers, currentTargetProgress, goalAmount);
             tvProgressTargetNumbers.setText(targetNumbers);
         } else {
+            // Hide if no target amount
             llTargetSection.setVisibility(View.GONE);
         }
 
-        // Time (Hours) Logic
+        // 6. Setup Time (Hours) UI Logic
         if (timeHours > 0) {
             llTimeSection.setVisibility(View.VISIBLE);
 
@@ -143,32 +157,43 @@ public class DashboardActivity extends AppCompatActivity {
             String timeNumbers = getString(R.string.dashboard_tv_progress_numbers, currentTimeProgress, timeHours);
             tvProgressTimeNumbers.setText(timeNumbers);
         } else {
+            // Hide if no time was set
             llTimeSection.setVisibility(View.GONE);
         }
     }
-
-
     /**
-     * Calculates the days left until the deadline and updates the UI.
-     *
+     * Calculates the days left until the deadline and updates the UI with visual alarm.
      * @param deadlineStr The target date string.
      */
     private void calculateCountdown(String deadlineStr) {
         try {
+            // 1. Parse dates and calculate the difference in days
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d.M.yyyy");
             LocalDate deadlineDate = LocalDate.parse(deadlineStr, dtf);
             LocalDate today = LocalDate.now();
 
             long daysLeft = ChronoUnit.DAYS.between(today, deadlineDate);
 
+            // 2. Update UI based on remaining time
             if (daysLeft >= 0) {
                 String daysLeftText = getString(R.string.dashboard_tv_days_left, (int) daysLeft);
                 tvDashboardCountdown.setText(daysLeftText);
+
+                // 3. Visual Alarm: Red if 3 days or less, default system color otherwise
+                if (daysLeft <= 3) {
+                    tvDashboardCountdown.setTextColor(Color.RED);
+                } else {
+                    tvDashboardCountdown.setTextColor(defaultTextColor);
+                }
             } else {
                 tvDashboardCountdown.setText(R.string.dashboard_tv_deadline_reached);
+                // Keeps red if deadline is reached
+                tvDashboardCountdown.setTextColor(Color.RED);
             }
         } catch (Exception e) {
+            // Fallback if date parsing fails
             tvDashboardCountdown.setText(R.string.dashboard_tv_deadline_unknown);
+            tvDashboardCountdown.setTextColor(defaultTextColor);
         }
     }
 
@@ -176,21 +201,57 @@ public class DashboardActivity extends AppCompatActivity {
      * Shows a dialog allowing the user to enter new progress manually.
      */
     private void showAddProgressDialog() {
+        // 1. Create input field for the dialog
         final EditText etInput = new EditText(this);
         etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        etInput.setHint(R.string.dashboard_btn_alert_hint);
+        etInput.setHint(R.string.dashboard_dialog_progress_hint);
 
-        new AlertDialog.Builder(this).setTitle(R.string.dashboard_btn_alert_title).setMessage(R.string.dashboard_btn_alert_message).setView(etInput).setPositiveButton(R.string.dashboard_btn_alert_add, (dialog, which) -> {
+        // 2. Build and show the dialog
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dashboard_dialog_progress_title)
+                .setMessage(R.string.dashboard_dialog_progress_message)
+                .setView(etInput)
+                .setPositiveButton(R.string.dashboard_dialog_progress_add, (dialog, which) -> {
             String inputStr = etInput.getText().toString();
+
+            // 3. Handle input
             if (!inputStr.isEmpty()) {
                 int addedAmount = Integer.parseInt(inputStr);
 
                 // Save the new progress
                 persistenceManager.addTargetProgress(addedAmount);
 
-                // Reload the whole dashboard to instantly update bars and text!
+                // Reload dashboard to update UI
                 loadDashboardData();
+                //Feedback for progress
+                Toast.makeText(DashboardActivity.this, R.string.msg_dashboard_progress_added, Toast.LENGTH_SHORT).show();
+            } else {
+                //Feedback for empty progress
+                Toast.makeText(DashboardActivity.this, R.string.msg_dashboard_progress_empty, Toast.LENGTH_SHORT).show();
             }
-        }).setNegativeButton(R.string.dashboard_btn_alert_cancel, null).show();
+        })
+                .setNegativeButton(R.string.dashboard_dialog_progress_cancel, null)
+                .show();
+    }
+
+    /**
+     * shows a confirmation dialog to reset current progress and start a new goal.
+     */
+    private void handleNewGoalAction() {
+        new AlertDialog.Builder(this).setTitle(R.string.dashboard_dialog_reset_title).setMessage(R.string.dashboard_dialog_reset_message).setPositiveButton(R.string.dashboard_dialog_reset_confirm, (dialog, which) -> {
+            // 1. Clear saved data
+            persistenceManager.clearSetupData();
+
+            // 2. Feedback for deletion
+            Toast.makeText(this, R.string.msg_dashboard_goal_deleted, Toast.LENGTH_SHORT).show();
+
+
+            // 3. Navigate to MainActivity
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+
+            // 4. Close Dashboard
+            finish();
+        }).setNegativeButton(R.string.dashboard_dialog_reset_cancel, null).show();
     }
 }

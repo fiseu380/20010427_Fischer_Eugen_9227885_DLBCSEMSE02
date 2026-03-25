@@ -5,7 +5,7 @@
     <string name="setup_tv_title">Zanshin Focus Setup</string>
     <string name="setup_tv_subtitle">Zanshin stands for \"unwavering focus\". </string>
     <string name="setup_tv_explain">Choose a project, set a clear target, and track your progress until it\'s done.</string>
-    <string name="setup_tv_test">Hello bro</string>
+
 
     <string name="setup_tv_label_category">1. What do you want to track?</string>
     <string name="setup_tv_label_goal">2. How do you want to set your goal?</string>
@@ -33,22 +33,34 @@
     <string name="dashboard_tv_progress_time_label">Time Commitment (Hours)</string>
     <string name="dashboard_tv_progress_numbers">%1$d / %2$d</string>
 
-    <!-- Button for adding progress Dialog -->
+    <string name="dashboard_btn_new_goal">Reset goal</string>
     <string name="dashboard_btn_add_progress">+</string>
-    <string name="dashboard_btn_alert_title">Add Progress</string>
-    <string name="dashboard_btn_alert_message">How much do you want to add?</string>
-    <string name="dashboard_btn_alert_hint">e.g. 50</string>
-    <string name="dashboard_btn_alert_add">Add</string>
-    <string name="dashboard_btn_alert_cancel">Cancel</string>
 
-    <!-- Calculator Dialog -->
-    <string name="calc_alert_title">Calculate Daily Hours</string>
-    <string name="calc_alert_message">How many hours per day do you want to work?</string>
-    <string name="calc_et_hint_hours">Hours per day</string>
-    <string name="calc_btn_ok">OK</string>
-    <string name="calc_btn_cancel">Cancel</string>
+    <!-- Reset Goal Dialog -->
+    <string name="dashboard_dialog_reset_title">Are you sure?</string>
+    <string name="dashboard_dialog_reset_message">This will delete your current goal and all its progress. You cannot undo this action.</string>
+    <string name="dashboard_dialog_reset_confirm">Yes, delete</string>
+    <string name="dashboard_dialog_reset_cancel">Cancel</string>
+
+    <!-- Add Progress Dialog -->
+    <string name="dashboard_dialog_progress_title">Add Progress</string>
+    <string name="dashboard_dialog_progress_message">How much do you want to add?</string>
+    <string name="dashboard_dialog_progress_hint">e.g. 50</string>
+    <string name="dashboard_dialog_progress_add">Add</string>
+    <string name="dashboard_dialog_progress_cancel">Cancel</string>
+
+    <!-- Setup Calculator Dialog -->
+    <string name="setup_dialog_calc_title">Calculate Daily Hours</string>
+    <string name="setup_dialog_calc_message">How many hours per day do you want to work?</string>
+    <string name="setup_dialog_calc_hint">Hours per day</string>
+    <string name="setup_dialog_calc_ok">OK</string>
+    <string name="setup_dialog_calc_cancel">Cancel</string>
 
     <!-- Messages & Errors -->
+    <string name="msg_dashboard_progress_added">Progress updated!</string>
+    <string name="msg_dashboard_progress_empty">Please enter a value!</string>
+    <string name="msg_dashboard_goal_deleted">Goal deleted!</string>
+
     <string name="msg_setup_fill_all">Please fill in all fields</string>
     <string name="msg_setup_save_success">Saved %s goal!</string>
     <string name="msg_setup_deadline_missing">Please choose a deadline!</string>
@@ -57,6 +69,7 @@
     <string name="msg_setup_error_numbers">Numbers only!</string>
     <string name="msg_setup_error_calc">Error in calculation!</string>
 
+    <!-- Spinner Options -->
     <string-array name="setup_sp_category_options">
         <item>Studying for exams</item>
         <item>Writing thesis</item>
