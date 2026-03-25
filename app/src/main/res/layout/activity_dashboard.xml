@@ -17,40 +17,56 @@
         <!-- HEADER SECTION: Title, Goal and Countdown                   -->
         <!-- =========================================================== -->
 
-        <TextView
-            android:id="@+id/tvDashboardTitle"
+        <Button
+            android:id="@+id/btnDashboardNewGoal"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/dashboard_tv_title"
-            android:textSize="28sp"
-            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/dashboard_btn_new_goal"
+            android:textAllCaps="false"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvDashboardGoal"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/llHeaderSection"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
+            android:layout_marginTop="80dp"
+            android:gravity="center"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle"
-            tools:text="Goal: Writing Thesis" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvDashboardCountdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/red"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDashboardGoal"
-            tools:text="30 days left" />
+            <TextView
+                android:id="@+id/tvDashboardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_tv_title"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDashboardGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="20sp"
+                tools:text="Goal: Writing Thesis" />
+
+            <TextView
+                android:id="@+id/tvDashboardCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="18sp"
+                tools:text="30 days left" />
+
+        </LinearLayout>
 
         <!-- =========================================================== -->
         <!-- PROGRESS SECTION: Target and Time Bars                      -->
@@ -67,7 +83,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDashboardCountdown"
+            app:layout_constraintTop_toBottomOf="@id/llHeaderSection"
             app:layout_constraintVertical_bias="0">
 
             <!-- Sub-Section: Target/Amount -->
