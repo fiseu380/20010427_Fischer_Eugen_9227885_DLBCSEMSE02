@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZanshinTracker">
         <activity
+            android:name=".ui.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.DashboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />

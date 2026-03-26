@@ -37,6 +37,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.gson
     
     // Testing dependencies
     testImplementation libs.junit
