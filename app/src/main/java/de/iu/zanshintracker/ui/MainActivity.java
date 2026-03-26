@@ -19,12 +19,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
 import de.iu.zanshintracker.R;
 import de.iu.zanshintracker.data.PersistenceManager;
+import de.iu.zanshintracker.logic.TimeCalculator;
 
 /**
  * Main screen of the app.
@@ -131,11 +130,7 @@ public class MainActivity extends AppCompatActivity {
      * Sets up the category Spinner.
      */
     private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.setup_sp_category_options,
-                android.R.layout.simple_spinner_item
-        );
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.setup_sp_category_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spSetupCategory.setAdapter(adapter);
     }
@@ -171,38 +166,32 @@ public class MainActivity extends AppCompatActivity {
         etCalcInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         etCalcInput.setHint(R.string.setup_dialog_calc_hint);
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.setup_dialog_calc_title)
-                .setMessage(R.string.setup_dialog_calc_message)
-                .setView(etCalcInput)
-                .setPositiveButton(R.string.setup_dialog_calc_ok, (dialog, which) -> {
-                    String hoursStr = etCalcInput.getText().toString();
-                    if (!hoursStr.isEmpty()) {
-                        performCalculation(deadlineStr, hoursStr);
-                    }
-                })
-                .setNegativeButton(R.string.setup_dialog_calc_cancel, null)
-                .show();
+        new AlertDialog.Builder(this).setTitle(R.string.setup_dialog_calc_title).setMessage(R.string.setup_dialog_calc_message).setView(etCalcInput).setPositiveButton(R.string.setup_dialog_calc_ok, (dialog, which) -> {
+            String hoursStr = etCalcInput.getText().toString();
+            if (!hoursStr.isEmpty()) {
+                performCalculation(deadlineStr, hoursStr);
+            }
+        }).setNegativeButton(R.string.setup_dialog_calc_cancel, null).show();
     }
 
     /**
      * Calculates total hours and updates the UI.
      *
-     * @param deadlineStr The chosen deadline.
+     * @param deadlineStr    The chosen deadline.
      * @param hoursPerDayStr Daily work hours.
      */
     private void performCalculation(String deadlineStr, String hoursPerDayStr) {
         try {
-            // 1. Parse dates
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d.M.yyyy");
-            LocalDate deadlineDate = LocalDate.parse(deadlineStr, dtf);
+            // 1. Use the time calculator logic to parse and calculate
+            LocalDate deadlineDate = TimeCalculator.parseDate(deadlineStr);
             LocalDate today = LocalDate.now();
 
-            long daysBetween = ChronoUnit.DAYS.between(today, deadlineDate);
+            long daysBetween = TimeCalculator.calculateDaysBetween(today, deadlineDate);
 
             // 2. Calculate and update UI
             if (daysBetween >= 0) {
-                long totalHours = daysBetween * Integer.parseInt(hoursPerDayStr);
+                int hoursPerDay = Integer.parseInt(hoursPerDayStr);
+                long totalHours = TimeCalculator.calculateTotalHours(daysBetween, hoursPerDay);
 
                 etSetupTimeHours.setText(String.valueOf(totalHours));
                 Toast.makeText(this, R.string.msg_setup_calc_updated, Toast.LENGTH_SHORT).show();

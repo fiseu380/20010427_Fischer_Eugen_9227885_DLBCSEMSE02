@@ -20,11 +20,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
 import de.iu.zanshintracker.R;
 import de.iu.zanshintracker.data.PersistenceManager;
+import de.iu.zanshintracker.logic.TimeCalculator;
 
 /**
  * This class handles the dashboard screen.
@@ -49,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvProgressTargetNumbers;
     private TextView tvProgressTimeNumbers;
     private Button btnAddTargetProgress;
+    private Button btnDashboardHistory;
 
     // ===========================================================
     // 2. DATA
@@ -82,7 +82,20 @@ public class DashboardActivity extends AppCompatActivity {
 
         // 4. Button Click Listener to reset and start a new goal
         btnDashboardNewGoal.setOnClickListener(v -> handleNewGoalAction());
+        // 5. Button Click Listener for the history screen
+        btnDashboardHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(this, HistoryActivity.class);
+            startActivity(intent);
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload data every time the screen becomes visible again otherwise the progress bar is not updated
+        loadDashboardData();
+    }
+
 
     /**
      * Finds all UI elements from the XML layout and links them to Java variables.
@@ -106,6 +119,7 @@ public class DashboardActivity extends AppCompatActivity {
         tvProgressTargetNumbers = findViewById(R.id.tvProgressTargetNumbers);
         tvProgressTimeNumbers = findViewById(R.id.tvProgressTimeNumbers);
         btnAddTargetProgress = findViewById(R.id.btnAddTargetProgress);
+        btnDashboardHistory = findViewById(R.id.btnDashboardHistory);
     }
 
     /**
@@ -161,18 +175,19 @@ public class DashboardActivity extends AppCompatActivity {
             llTimeSection.setVisibility(View.GONE);
         }
     }
+
     /**
      * Calculates the days left until the deadline and updates the UI with visual alarm.
+     *
      * @param deadlineStr The target date string.
      */
     private void calculateCountdown(String deadlineStr) {
         try {
-            // 1. Parse dates and calculate the difference in days
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("d.M.yyyy");
-            LocalDate deadlineDate = LocalDate.parse(deadlineStr, dtf);
+            // 1. Use the time calculator logic to calculate days left
+            LocalDate deadlineDate = TimeCalculator.parseDate(deadlineStr);
             LocalDate today = LocalDate.now();
 
-            long daysLeft = ChronoUnit.DAYS.between(today, deadlineDate);
+            long daysLeft = TimeCalculator.calculateDaysBetween(today, deadlineDate);
 
             // 2. Update UI based on remaining time
             if (daysLeft >= 0) {
@@ -207,11 +222,7 @@ public class DashboardActivity extends AppCompatActivity {
         etInput.setHint(R.string.dashboard_dialog_progress_hint);
 
         // 2. Build and show the dialog
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dashboard_dialog_progress_title)
-                .setMessage(R.string.dashboard_dialog_progress_message)
-                .setView(etInput)
-                .setPositiveButton(R.string.dashboard_dialog_progress_add, (dialog, which) -> {
+        new AlertDialog.Builder(this).setTitle(R.string.dashboard_dialog_progress_title).setMessage(R.string.dashboard_dialog_progress_message).setView(etInput).setPositiveButton(R.string.dashboard_dialog_progress_add, (dialog, which) -> {
             String inputStr = etInput.getText().toString();
 
             // 3. Handle input
@@ -229,9 +240,7 @@ public class DashboardActivity extends AppCompatActivity {
                 //Feedback for empty progress
                 Toast.makeText(DashboardActivity.this, R.string.msg_dashboard_progress_empty, Toast.LENGTH_SHORT).show();
             }
-        })
-                .setNegativeButton(R.string.dashboard_dialog_progress_cancel, null)
-                .show();
+        }).setNegativeButton(R.string.dashboard_dialog_progress_cancel, null).show();
     }
 
     /**

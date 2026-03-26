@@ -33,8 +33,10 @@
     <string name="dashboard_tv_progress_time_label">Time Commitment (Hours)</string>
     <string name="dashboard_tv_progress_numbers">%1$d / %2$d</string>
 
-    <string name="dashboard_btn_new_goal">Reset goal</string>
-    <string name="dashboard_btn_add_progress">+</string>
+    <!-- Dashboard Buttons -->
+    <string name="dashboard_btn_new_goal">Reset</string>
+    <string name="dashboard_btn_add_progress">Add</string>
+    <string name="dashboard_btn_history">History</string>
 
     <!-- Reset Goal Dialog -->
     <string name="dashboard_dialog_reset_title">Are you sure?</string>
@@ -56,10 +58,17 @@
     <string name="setup_dialog_calc_ok">OK</string>
     <string name="setup_dialog_calc_cancel">Cancel</string>
 
+    <!-- History Screen -->
+    <string name="history_cd_delete">Delete entry</string>
+    <string name="history_tv_title">Progress History</string>
+    <string name="history_btn_back">Back</string>
+
     <!-- Messages & Errors -->
     <string name="msg_dashboard_progress_added">Progress updated!</string>
     <string name="msg_dashboard_progress_empty">Please enter a value!</string>
     <string name="msg_dashboard_goal_deleted">Goal deleted!</string>
+
+    <string name="msg_history_entry_deleted">Entry deleted</string>
 
     <string name="msg_setup_fill_all">Please fill in all fields</string>
     <string name="msg_setup_save_success">Saved %s goal!</string>

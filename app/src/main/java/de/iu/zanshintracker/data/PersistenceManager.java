@@ -3,6 +3,15 @@ package de.iu.zanshintracker.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.iu.zanshintracker.model.ProgressEntry;
+
 /**
  * Manages the persistence of setup data using SharedPreferences.
  * This class handles saving and loading the user's project settings.
@@ -18,12 +27,13 @@ public class PersistenceManager {
     private static final String KEY_GOAL_UNIT = "user_goal_unit";
     private static final String KEY_DEADLINE = "user_deadline";
     private static final String KEY_TIME_HOURS = "user_time_hours";
-    private static final String KEY_TARGET_PROGRESS = "user_target_progress";
+    private static final String KEY_PROGRESS_HISTORY = "user_progress_history";
 
     // ===========================================================
     // 2. VARIABLES
     // ===========================================================
     private final SharedPreferences prefs;
+    private final Gson gson;
 
     /**
      * Constructor for the PersistenceManager.
@@ -33,6 +43,7 @@ public class PersistenceManager {
     public PersistenceManager(Context context) {
         // Use private mode so only this app can access the data
         this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        this.gson = new Gson();
     }
 
     /**
@@ -55,8 +66,8 @@ public class PersistenceManager {
         editor.putString(KEY_DEADLINE, deadline);
         editor.putInt(KEY_TIME_HOURS, timeHours);
 
-        // 3. Reset target progress
-        editor.putInt(KEY_TARGET_PROGRESS, 0);
+        // 3. Reset history to an empty list
+        editor.putString(KEY_PROGRESS_HISTORY, gson.toJson(new ArrayList<ProgressEntry>()));
 
         // 4. Save everything
         editor.apply();
@@ -108,28 +119,81 @@ public class PersistenceManager {
     }
 
     /**
-     * Adds new progress to the current target progress and saves it.
-     *
-     * @param addedAmount The amount the user just completed.
+     * Retrieves the full history of progress entries.
      */
-    public void addTargetProgress(int addedAmount) {
-        int current = getCurrentTargetProgress();
-        prefs.edit().putInt(KEY_TARGET_PROGRESS, current + addedAmount).apply();
+    public List<ProgressEntry> getHistory() {
+        String json = prefs.getString(KEY_PROGRESS_HISTORY, "[]");
+        Type type = new TypeToken<ArrayList<ProgressEntry>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 
     /**
-     * Returns the currently achieved target progress.
-     *
-     * @return The current progress (default 0).
+     * Adds a new entry to the history with the current timestamp.
+     */
+    public void addTargetProgress(int addedAmount) {
+        List<ProgressEntry> history = getHistory();
+
+        ProgressEntry newEntry = new ProgressEntry(System.currentTimeMillis(), addedAmount);
+        history.add(newEntry);
+
+        String json = gson.toJson(history);
+        prefs.edit().putString(KEY_PROGRESS_HISTORY, json).apply();
+    }
+
+    /**
+     * Calculates total progress by summing up all entries from history.
      */
     public int getCurrentTargetProgress() {
-        return prefs.getInt(KEY_TARGET_PROGRESS, 0);
+        List<ProgressEntry> history = getHistory();
+        int total = 0;
+        for (ProgressEntry entry : history) {
+            total += entry.getAmount();
+        }
+        return total;
     }
+
+
+//    /**
+//     * Adds new progress to the current target progress and saves it.
+//     *
+//     * @param addedAmount The amount the user just completed.
+//     */
+//    public void addTargetProgress(int addedAmount) {
+//        int current = getCurrentTargetProgress();
+//        prefs.edit().putInt(KEY_TARGET_PROGRESS, current + addedAmount).apply();
+//    }
+//
+//    /**
+//     * Returns the currently achieved target progress.
+//     *
+//     * @return The current progress (default 0).
+//     */
+//    public int getCurrentTargetProgress() {
+//        return prefs.getInt(KEY_TARGET_PROGRESS, 0);
+//    }
 
     /**
      * Clears all saved setup data to start a new goal.
      */
     public void clearSetupData() {
         prefs.edit().clear().apply();
+    }
+
+    /**
+     * Deletes entry from the history based on its list index.
+     *
+     * @param index The position of the item to delete.
+     */
+    public void deleteProgressEntry(int index) {
+        List<ProgressEntry> history = getHistory();
+
+        // Safety check to prevent app crashes
+        if (index >= 0 && index < history.size()) {
+            history.remove(index);
+
+            // Save the updated list back to SharedPreferences
+            String json = gson.toJson(history);
+            prefs.edit().putString(KEY_PROGRESS_HISTORY, json).apply();
+        }
     }
 }
