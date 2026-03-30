@@ -5,12 +5,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Utility class for time and date calculations.
+ * Separated from UI for clean architecture and easy unit testing.
+ */
 public class TimeCalculator {
-
-    /**
-     * Utility class for time and date calculations.
-     * Separated from UI for clean architecture and easy unit testing.
-     */
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy");
 
@@ -36,6 +35,33 @@ public class TimeCalculator {
             return 0; // Prevent negative calculations
         }
         return days * hoursPerDay;
+    }
+
+    // ===========================================================
+    // POMODORO TIMER SECTION
+    // ===========================================================
+
+    /**
+     * Converts minutes to milliseconds.
+     */
+    public static long minutesToMillis(long minutes) {
+        return minutes * 60 * 1000;
+    }
+
+    /**
+     * Converts milliseconds to full minutes.
+     */
+    public static int millisToMinutes(long millis) {
+        return (int) (millis / 1000 / 60);
+    }
+
+    /**
+     * Formats milliseconds into a MM:SS string.
+     */
+    public static String formatMillisToMMSS(long millis) {
+        int minutes = (int) (millis / 1000) / 60;
+        int seconds = (int) (millis / 1000) % 60;
+        return String.format(java.util.Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 }
 

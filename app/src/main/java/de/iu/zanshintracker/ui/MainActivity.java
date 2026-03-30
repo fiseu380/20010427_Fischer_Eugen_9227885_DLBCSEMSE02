@@ -162,10 +162,11 @@ public class MainActivity extends AppCompatActivity {
      * @param deadlineStr The chosen deadline.
      */
     private void showCalculatorDialog(String deadlineStr) {
+        // 1. input field for the dialog
         final EditText etCalcInput = new EditText(this);
         etCalcInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         etCalcInput.setHint(R.string.setup_dialog_calc_hint);
-
+        // 2. build and show the dialog
         new AlertDialog.Builder(this).setTitle(R.string.setup_dialog_calc_title).setMessage(R.string.setup_dialog_calc_message).setView(etCalcInput).setPositiveButton(R.string.setup_dialog_calc_ok, (dialog, which) -> {
             String hoursStr = etCalcInput.getText().toString();
             if (!hoursStr.isEmpty()) {

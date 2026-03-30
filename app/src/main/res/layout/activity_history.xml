@@ -9,9 +9,8 @@
     <!-- 1. Title -->
     <TextView
         android:id="@+id/tvHistoryTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:text="@string/history_tv_title"
         android:textSize="24sp"
         android:textStyle="bold"

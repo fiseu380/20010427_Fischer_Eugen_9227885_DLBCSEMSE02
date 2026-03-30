@@ -24,15 +24,14 @@ import de.iu.zanshintracker.model.ProgressEntry;
 public class ProgressEntryAdapter extends RecyclerView.Adapter<ProgressEntryAdapter.ProgressEntryViewHolder> {
 
     // ===========================================================
-    // 1. INTERFACES
-    // ===========================================================
-
-    // ===========================================================
-    // 2. DATA
+    // 1. DATA
     // ===========================================================
     private final List<ProgressEntry> entries;
     private final OnItemDeleteListener deleteListener;
     private final SimpleDateFormat dateFormat;
+    // ===========================================================
+    // 2. CONSTRUCTOR
+    // ===========================================================
 
     /**
      * Constructor for the ProgressEntryAdapter.
@@ -50,7 +49,7 @@ public class ProgressEntryAdapter extends RecyclerView.Adapter<ProgressEntryAdap
     }
 
     // ===========================================================
-    // 3. CONSTRUCTOR
+    // 3. METHODS
     // ===========================================================
 
     @NonNull
@@ -63,10 +62,6 @@ public class ProgressEntryAdapter extends RecyclerView.Adapter<ProgressEntryAdap
         return new ProgressEntryViewHolder(view, deleteListener);
     }
 
-    // ===========================================================
-    // 3. METHODS
-    // ===========================================================
-
     @Override
     public void onBindViewHolder(@NonNull ProgressEntryViewHolder holder, int position) {
         // 1. Get the current entry
@@ -77,7 +72,7 @@ public class ProgressEntryAdapter extends RecyclerView.Adapter<ProgressEntryAdap
 
         // 3. Update UI elements
         holder.tvDate.setText(dateString);
-        holder.tvAmount.setText("+" + entry.getAmount());
+        holder.tvAmount.setText(String.format(Locale.getDefault(), "+%d", entry.getAmount()));
     }
 
     @Override
@@ -117,8 +112,9 @@ public class ProgressEntryAdapter extends RecyclerView.Adapter<ProgressEntryAdap
 
             // 2. Set up Click Listeners
             btnDelete.setOnClickListener(v -> {
-                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    listener.onDeleteClick(getAdapterPosition());
+                int position = getBindingAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(position);
                 }
             });
         }

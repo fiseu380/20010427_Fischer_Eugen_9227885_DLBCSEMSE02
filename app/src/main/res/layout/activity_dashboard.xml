@@ -11,6 +11,7 @@
         android:id="@+id/clDashboardMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
         tools:context=".ui.DashboardActivity">
 
         <!-- =========================================================== -->
@@ -21,7 +22,8 @@
             android:id="@+id/llHeaderSection"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,167 +35,118 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dashboard_tv_title"
-                android:textSize="28sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvDashboardGoal"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textSize="20sp"
-                tools:text="Goal: Writing Thesis" />
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/tvDashboardCountdown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="18sp"
-                tools:text="30 days left" />
+                <TextView
+                    android:id="@+id/tvDashboardGoal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="Writing Thesis" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="14dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/grey" />
+
+                <TextView
+                    android:id="@+id/tvDashboardCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    tools:text="30 days left" />
+            </LinearLayout>
 
         </LinearLayout>
+        <!-- =========================================================== -->
+        <!-- POMODORO WIDGET                                             -->
+        <!-- =========================================================== -->
+        <include
+            android:id="@+id/pomodoroWidget"
+            layout="@layout/layout_pomodoro"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llHeaderSection" />
 
         <!-- =========================================================== -->
         <!-- PROGRESS SECTION: Target and Time Bars                      -->
         <!-- =========================================================== -->
-
-        <LinearLayout
-            android:id="@+id/llProgressContainer"
+        <include
+            android:id="@+id/includeProgress"
+            layout="@layout/layout_progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="32dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llHeaderSection"
-            app:layout_constraintVertical_bias="0">
-
-            <!-- Sub-Section: Target/Amount -->
-            <LinearLayout
-                android:id="@+id/llTargetSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvProgressTargetLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="Target Progress (Words)" />
-
-                <ProgressBar
-                    android:id="@+id/pbTarget"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="8dp" />
-
-                <TextView
-                    android:id="@+id/tvProgressTargetNumbers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="4dp"
-                    android:textSize="14sp"
-                    tools:text="0 / 500" />
-
-            </LinearLayout>
-
-            <!-- Sub-Section: Time/Commitment -->
-            <LinearLayout
-                android:id="@+id/llTimeSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvProgressTimeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_tv_progress_time_label"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <ProgressBar
-                    android:id="@+id/pbTime"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="8dp" />
-
-                <TextView
-                    android:id="@+id/tvProgressTimeNumbers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="4dp"
-                    android:textSize="14sp"
-                    tools:text="0 / 50" />
-            </LinearLayout>
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/pomodoroWidget" />
 
         <!-- =========================================================== -->
         <!-- ACTION SECTION: History and Reset Goal                      -->
         <!-- =========================================================== -->
-        <!-- =========================================================== -->
-        <!-- ACTION SECTION: History and Reset Goal                      -->
-        <!-- =========================================================== -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/llActionSection"
-            android:layout_width="match_parent"
+
+        <Button
+            android:id="@+id/btnDashboardHistory"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
+            android:text="@string/dashboard_btn_history"
+            android:textAllCaps="false"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llProgressContainer"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintEnd_toStartOf="@+id/btnAddTargetProgress"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/includeProgress"
+            app:layout_constraintVertical_bias="1.0" />
 
-            <Button
-                android:id="@+id/btnDashboardHistory"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/dashboard_btn_history"
-                android:textAllCaps="false"
-                android:textColor="@color/grey"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/btnAddTargetProgress"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnAddTargetProgress"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_btn_add_progress"
+            android:textAllCaps="false"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnDashboardHistory"
+            app:layout_constraintEnd_toStartOf="@+id/btnDashboardNewGoal"
+            app:layout_constraintStart_toEndOf="@+id/btnDashboardHistory"
+            app:layout_constraintTop_toTopOf="@+id/btnDashboardHistory" />
 
-            <Button
-                android:id="@+id/btnAddTargetProgress"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/dashboard_btn_add_progress"
-                android:textAllCaps="false"
-                android:textColor="@color/grey"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/btnDashboardNewGoal"
-                app:layout_constraintStart_toEndOf="@+id/btnDashboardHistory"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/btnDashboardNewGoal"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/dashboard_btn_new_goal"
-                android:textAllCaps="false"
-                android:textColor="@color/red"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnAddTargetProgress"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btnDashboardNewGoal"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@string/dashboard_btn_new_goal"
+            android:textAllCaps="false"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnDashboardHistory"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnAddTargetProgress"
+            app:layout_constraintTop_toTopOf="@+id/btnDashboardHistory" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

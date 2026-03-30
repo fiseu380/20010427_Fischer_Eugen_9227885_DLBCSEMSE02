@@ -59,7 +59,7 @@ public class HistoryActivity extends AppCompatActivity {
         // 4. Initialize UI components
         initializeViews();
 
-        // 5. Load data and setup the list
+        // 5. Load data and set up the list
         setupRecyclerView();
 
         // 6. Set up Click Listeners
@@ -82,7 +82,7 @@ public class HistoryActivity extends AppCompatActivity {
         historyList = persistenceManager.getHistory();
 
         // 2. Create the adapter and define what happens when the delete icon is clicked
-        adapter = new ProgressEntryAdapter(historyList, position -> deleteEntry(position));
+        adapter = new ProgressEntryAdapter(historyList, this::deleteEntry);
 
         // 3. Configure the RecyclerView
         rvHistoryList.setLayoutManager(new LinearLayoutManager(this));

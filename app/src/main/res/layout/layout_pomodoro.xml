@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvPomodoroCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp">
+
+        <!-- 1. Settings -->
+        <ImageButton
+            android:id="@+id/btnPomodoroSettings"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pomodoro_desc_settings"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 2. Timer Display -->
+        <TextView
+            android:id="@+id/tvTimerDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pomodoro_default_timer"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 3. Badge Container -->
+        <LinearLayout
+            android:id="@+id/llBadgeContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTimerDisplay">
+
+            <TextView
+                android:id="@+id/tvCycleStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pomodoro_status_focus"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvCycleCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/pomodoro_cycle_count"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- 4. Title -->
+        <TextView
+            android:id="@+id/tvPomodoroTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/pomodoro_title"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llBadgeContainer" />
+
+        <!-- 5. Buttons -->
+        <ImageButton
+            android:id="@+id/btnPomodoroRestart"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pomodoro_desc_restart"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_revert"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnPomodoroStart"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btnPomodoroStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pomodoro_btn_start"
+            android:textAllCaps="true"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnPomodoroRestart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnPomodoroRestart"
+            app:layout_constraintTop_toTopOf="@+id/btnPomodoroRestart" />
+
+        <!-- Visibility Groups -->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvPomodoroTitle,llBadgeContainer,tvTimerDisplay,btnPomodoroRestart,btnPomodoroStart" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvLabelWork,tvLabelBreak,tvLabelCycles,etWorkTime,etBreakTime,etCycles" />
+
+        <!-- Settings Group Views -->
+        <TextView
+            android:id="@+id/tvLabelWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="@string/pomodoro_label_work"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvLabelBreak"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvLabelBreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pomodoro_label_break"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLabelWork"
+            app:layout_constraintEnd_toStartOf="@+id/tvLabelCycles"
+            app:layout_constraintStart_toEndOf="@+id/tvLabelWork"
+            app:layout_constraintTop_toTopOf="@+id/tvLabelWork" />
+
+        <TextView
+            android:id="@+id/tvLabelCycles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pomodoro_label_cycles"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLabelWork"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvLabelBreak"
+            app:layout_constraintTop_toTopOf="@+id/tvLabelWork" />
+
+        <EditText
+            android:id="@+id/etWorkTime"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            android:background="@android:drawable/editbox_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:importantForAutofill="no"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvLabelWork"
+            app:layout_constraintStart_toStartOf="@+id/tvLabelWork"
+            app:layout_constraintTop_toBottomOf="@+id/tvLabelWork"
+            android:labelFor="@+id/etWorkTime"/>
+
+        <EditText
+            android:id="@+id/etBreakTime"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:importantForAutofill="no"
+            app:layout_constraintBottom_toBottomOf="@+id/etWorkTime"
+            app:layout_constraintEnd_toEndOf="@+id/tvLabelBreak"
+            app:layout_constraintStart_toStartOf="@+id/tvLabelBreak"
+            app:layout_constraintTop_toTopOf="@+id/etWorkTime"
+            android:labelFor="@+id/etBreakTime"/>
+
+        <EditText
+            android:id="@+id/etCycles"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:importantForAutofill="no"
+            app:layout_constraintBottom_toBottomOf="@+id/etWorkTime"
+            app:layout_constraintEnd_toEndOf="@+id/tvLabelCycles"
+            app:layout_constraintStart_toStartOf="@+id/tvLabelCycles"
+            app:layout_constraintTop_toTopOf="@+id/etWorkTime"
+            android:labelFor="@+id/etCycles"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

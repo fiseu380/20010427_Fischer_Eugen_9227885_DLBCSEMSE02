@@ -32,6 +32,7 @@
     <string name="dashboard_tv_progress_target_label">Target Progress (%s)</string>
     <string name="dashboard_tv_progress_time_label">Time Commitment (Hours)</string>
     <string name="dashboard_tv_progress_numbers">%1$d / %2$d</string>
+    <string name="dashboard_tv_progress_hours_numbers">%.2f / %d</string>
 
     <!-- Dashboard Buttons -->
     <string name="dashboard_btn_new_goal">Reset</string>
@@ -77,6 +78,26 @@
     <string name="msg_setup_calc_updated">Goal automatically updated to hours!</string>
     <string name="msg_setup_error_numbers">Numbers only!</string>
     <string name="msg_setup_error_calc">Error in calculation!</string>
+
+    <!-- Pomodoro Widget -->
+    <string name="pomodoro_title">FOCUS MODE</string>
+    <string name="pomodoro_status_ready">Ready</string>
+    <string name="pomodoro_status_focus">Focus</string>
+    <string name="pomodoro_cycle_count">Cycle 1/1</string>
+    <string name="pomodoro_default_timer">60:00</string>
+    <string name="pomodoro_label_work">Focus</string>
+    <string name="pomodoro_label_break">Break</string>
+    <string name="pomodoro_label_cycles">Cycles</string>
+    <string name="pomodoro_btn_start">Start</string>
+    <string name="pomodoro_desc_settings">Settings</string>
+    <string name="pomodoro_desc_restart">Restart Timer</string>
+
+    <!-- Pomodoro Messages & Status -->
+    <string name="msg_pomodoro_session_complete">Session Complete!</string>
+    <string name="msg_pomodoro_tracked">+%1$d min tracked!</string>
+    <string name="pomodoro_cycle_work">Cycle %1$d/%2$d</string>
+    <string name="pomodoro_cycle_break">Cycle %1$d/%2$d</string>
+    <string name="msg_pomodoro_fill_fields">Please fill in all fields!</string>
 
     <!-- Spinner Options -->
     <string-array name="setup_sp_category_options">

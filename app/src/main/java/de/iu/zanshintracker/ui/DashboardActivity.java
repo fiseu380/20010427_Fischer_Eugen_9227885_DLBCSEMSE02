@@ -34,7 +34,6 @@ public class DashboardActivity extends AppCompatActivity {
     // ===========================================================
     // 1. UI COMPONENTS
     // ===========================================================
-    private TextView tvDashboardTitle;
     private Button btnDashboardNewGoal;
     private TextView tvDashboardGoal;
     private TextView tvDashboardCountdown;
@@ -55,34 +54,36 @@ public class DashboardActivity extends AppCompatActivity {
     // ===========================================================
     private PersistenceManager persistenceManager;
 
+    // ===========================================================
+    // 3. WIDGETS
+    // ===========================================================
+    private PomodoroWidget pomodoroWidget;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Setup for the full screen view
+        // 1. Setup full screen view
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
 
-        // Handle the padding for the system bars
+        // 2. Handle system bar padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clDashboardMain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 1. Initialize logic and UI
+        // 3. Initialize logic and UI
         persistenceManager = new PersistenceManager(this);
         initializeViews();
 
-        // 2. Load and display goal data
+        // 4. Load and display goal data
         loadDashboardData();
 
-        // 3. Button Click Listener for the progress button
+        // 5. Set up Click Listeners
         btnAddTargetProgress.setOnClickListener(v -> showAddProgressDialog());
-
-        // 4. Button Click Listener to reset and start a new goal
         btnDashboardNewGoal.setOnClickListener(v -> handleNewGoalAction());
-        // 5. Button Click Listener for the history screen
         btnDashboardHistory.setOnClickListener(v -> {
             Intent intent = new Intent(this, HistoryActivity.class);
             startActivity(intent);
@@ -90,19 +91,29 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        // Reload data every time the screen becomes visible again otherwise the progress bar is not updated
-        loadDashboardData();
+    protected void onPause() {
+        super.onPause();
+        // Save timer state when app goes to background
+        if (pomodoroWidget != null) {
+            pomodoroWidget.onPause();
+        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restore timer state and update Dashboard UI
+        if (pomodoroWidget != null) {
+            pomodoroWidget.onResume();
+        }
+        loadDashboardData();
+    }
 
     /**
      * Finds all UI elements from the XML layout and links them to Java variables.
      */
     private void initializeViews() {
         // 1. Header Section
-        tvDashboardTitle = findViewById(R.id.tvDashboardTitle);
         tvDashboardGoal = findViewById(R.id.tvDashboardGoal);
         tvDashboardCountdown = findViewById(R.id.tvDashboardCountdown);
         btnDashboardNewGoal = findViewById(R.id.btnDashboardNewGoal);
@@ -120,10 +131,14 @@ public class DashboardActivity extends AppCompatActivity {
         tvProgressTimeNumbers = findViewById(R.id.tvProgressTimeNumbers);
         btnAddTargetProgress = findViewById(R.id.btnAddTargetProgress);
         btnDashboardHistory = findViewById(R.id.btnDashboardHistory);
+
+        // 3. Initialize Pomodoro Widget and set callback
+        View widgetView = findViewById(R.id.pomodoroWidget);
+        pomodoroWidget = new PomodoroWidget(this, widgetView, this::loadDashboardData);
     }
 
     /**
-     * * Loads the stored setup data, updates text fields, and configures the progress bars.
+     * Loads the stored setup data, updates text fields, and configures the progress bars.
      */
     private void loadDashboardData() {
         // 1. Get data from the persistence layer
@@ -142,7 +157,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         // 4. Retrieve current progress state
         int currentTargetProgress = persistenceManager.getCurrentTargetProgress();
-        int currentTimeProgress = 0; // Placeholder for future time tracking implementation
 
         // 5. Setup Target (Amount) UI Logic
         if (goalAmount > 0) {
@@ -165,10 +179,16 @@ public class DashboardActivity extends AppCompatActivity {
         if (timeHours > 0) {
             llTimeSection.setVisibility(View.VISIBLE);
 
-            pbTime.setMax(timeHours);
-            pbTime.setProgress(currentTimeProgress);
+            // 1. Calculate hours as double from tracked minutes
+            int trackedMinutes = persistenceManager.getTrackedTimeMinutes();
+            double currentHours = trackedMinutes / 60.0;
 
-            String timeNumbers = getString(R.string.dashboard_tv_progress_numbers, currentTimeProgress, timeHours);
+            // 2. Use minutes for the ProgressBar
+            pbTime.setMax(timeHours * 60);
+            pbTime.setProgress(trackedMinutes);
+
+            // 3. Update label with 2 decimal
+            String timeNumbers = getString(R.string.dashboard_tv_progress_hours_numbers, currentHours, timeHours);
             tvProgressTimeNumbers.setText(timeNumbers);
         } else {
             // Hide if no time was set
@@ -206,7 +226,7 @@ public class DashboardActivity extends AppCompatActivity {
                 tvDashboardCountdown.setTextColor(Color.RED);
             }
         } catch (Exception e) {
-            // Fallback if date parsing fails
+            // 4. Fallback if date parsing fails
             tvDashboardCountdown.setText(R.string.dashboard_tv_deadline_unknown);
             tvDashboardCountdown.setTextColor(defaultTextColor);
         }
@@ -234,11 +254,12 @@ public class DashboardActivity extends AppCompatActivity {
 
                 // Reload dashboard to update UI
                 loadDashboardData();
-                //Feedback for progress
-                Toast.makeText(DashboardActivity.this, R.string.msg_dashboard_progress_added, Toast.LENGTH_SHORT).show();
+
+                // Feedback for progress
+                Toast.makeText(this, R.string.msg_dashboard_progress_added, Toast.LENGTH_SHORT).show();
             } else {
-                //Feedback for empty progress
-                Toast.makeText(DashboardActivity.this, R.string.msg_dashboard_progress_empty, Toast.LENGTH_SHORT).show();
+                // Feedback for empty progress
+                Toast.makeText(this, R.string.msg_dashboard_progress_empty, Toast.LENGTH_SHORT).show();
             }
         }).setNegativeButton(R.string.dashboard_dialog_progress_cancel, null).show();
     }
@@ -253,7 +274,6 @@ public class DashboardActivity extends AppCompatActivity {
 
             // 2. Feedback for deletion
             Toast.makeText(this, R.string.msg_dashboard_goal_deleted, Toast.LENGTH_SHORT).show();
-
 
             // 3. Navigate to MainActivity
             Intent intent = new Intent(this, MainActivity.class);
